@@ -1,108 +1,98 @@
-# SQL-for-Data-Analysis
+# 📊 SQL for Data Analysis - Warehouse & Retail Sales
 
-![warehouse](https://user-images.githubusercontent.com/100838547/224486570-d7976cc8-bc0b-4a6e-a39f-1654016ceac8.jpg)
+This PostgreSQL project explores warehouse and retail sales data through a series of SQL queries to answer key business questions.
 
-## PostgreSQL project for analyzing warehouse and retail sales with the following questions.
+---
 
-* what is the total retail sales for each supplier?
+## 🔹 Questions and Queries
 
- QUERY:
- ```sql
- select supplier, sum(retailsales) as total_retail_sales
-from project 
-group by supplier;
- ```
-RESULT:
+### 1. Total Retail Sales for Each Supplier
 
-![supply](https://user-images.githubusercontent.com/100838547/224489292-87e0be9c-c732-4b43-8bf8-565bbc054124.png)
-* what is the total retail sales for each combination of supplier and month
-
-QUERY:
 ```sql
-select supplier, year, month, sum(retailsales) as total_retail_sales
-from project 
-group by supplier, year, month;
-```
-RESULT:
-
-![S2](https://user-images.githubusercontent.com/100838547/224490032-fcd48f03-6b2a-4a76-a0f8-f4d74d25819d.png)
-
-* what is the maximum warehouse sales for each item description?
-
-QUERY:
-```sql
-select itemdescription, max(retailsales) as max_warehouse_sales
-from project 
-group by itemdescription;
-```
-RESULT:
-
-![S3](https://user-images.githubusercontent.com/100838547/224490291-90dffa9b-fa4e-4514-8df8-5f2ffbb4cb28.png)
-
-* what is the average retail transfer for each year 
-
-QUERY:
-```sql
-select year, avg(retailtransfers) as avg_retail_transfers
-from project 
-group by year;
+SELECT supplier, SUM(retailsales) AS total_retail_sales
+FROM project
+GROUP BY supplier;
 ```
 
-RESULT:
+---
 
-![S4](https://user-images.githubusercontent.com/100838547/224490466-0d7f489f-88b2-4aad-8156-c5072dd131ca.png)
+### 2. Total Retail Sales by Supplier and Month
 
-* for each item description, what is the difference between the maximum and minimum retail sales? 
-QUERY:
 ```sql
-select itemdescription, max(retailsales) - min(retailsales) as diff_max_min_retail_sales
-from project 
-group by itemdescription;
-```
-RESULT:
-
-![S5](https://user-images.githubusercontent.com/100838547/224490734-631015ab-8936-4c4a-9c73-3e3a399d0b68.png)
-
-* what is the total retail sales for each supplier, broken down by year and month 
-
-QUERY:
-```sql
-select year, month, supplier,
-       sum(retailsales) over (partition by supplier, year, month) as total_retail_sales
-from project;
+SELECT supplier, year, month, SUM(retailsales) AS total_retail_sales
+FROM project
+GROUP BY supplier, year, month;
 ```
 
-RESULT:
-![S6](https://user-images.githubusercontent.com/100838547/224491227-92c48a4c-6169-4b7e-9375-3d224715f18c.png)
+---
 
-* what is the running total of retail sales for each item type, order by month?
-QUERY:
+### 3. Maximum Warehouse Sales per Item Description
+
 ```sql
-select year, month, itemtype,
-       sum(retailsales) over (partition by itemtype order by month) as running_total_retail_sales
-from project;
+SELECT itemdescription, MAX(retailsales) AS max_warehouse_sales
+FROM project
+GROUP BY itemdescription;
 ```
 
-RESULT:
+---
 
-![S7](https://user-images.githubusercontent.com/100838547/224491546-11d65523-edc9-4f63-820f-7473c1926e81.png)
+### 4. Average Retail Transfers by Year
 
-
-* what is the difference in retail sales between each month and the previous month, for each supplier and item type?
-QUERY:
 ```sql
-select year, month, supplier, itemtype,
-       retailsales - lag(retailsales) over (partition by supplier, itemtype order by year, month) as diff_retail_sales
-from project; 
+SELECT year, AVG(retailtransfers) AS avg_retail_transfers
+FROM project
+GROUP BY year;
 ```
 
-RESULT:
+---
 
-![S8](https://user-images.githubusercontent.com/100838547/224491808-dd42d7ad-695e-45c0-81e1-0fb823980eb2.png)
+### 5. Difference Between Maximum and Minimum Retail Sales per Item
 
-* what is the average retail sales for each item type compared to the overall average retail sales across all item types for each year?
-* What is the percentage of retail sales for each supplier, compared to the total retail sales across all suppliers, broken down by year and month?
-* What is the month with the highest retail transfer for each supplier, for the past 12 months?
+```sql
+SELECT itemdescription, MAX(retailsales) - MIN(retailsales) AS diff_max_min_retail_sales
+FROM project
+GROUP BY itemdescription;
+```
 
+---
 
-NOTE: This is just a sample of the query and results
+### 6. Total Retail Sales for Each Supplier (Broken Down by Year and Month)
+
+```sql
+SELECT year, month, supplier,
+       SUM(retailsales) OVER (PARTITION BY supplier, year, month) AS total_retail_sales
+FROM project;
+```
+
+---
+
+### 7. Running Total of Retail Sales for Each Item Type (Ordered by Month)
+
+```sql
+SELECT year, month, itemtype,
+       SUM(retailsales) OVER (PARTITION BY itemtype ORDER BY month) AS running_total_retail_sales
+FROM project;
+```
+
+---
+
+### 8. Difference in Retail Sales Between Each Month and Previous Month (For Each Supplier and Item Type)
+
+```sql
+SELECT year, month, supplier, itemtype,
+       retailsales - LAG(retailsales) OVER (PARTITION BY supplier, itemtype ORDER BY year, month) AS diff_retail_sales
+FROM project;
+```
+
+---
+
+## 🔹 Further Questions to Explore (Upcoming)
+
+- Average retail sales per item type compared to the overall yearly average.
+- Percentage of retail sales per supplier, compared to the total sales across all suppliers by year and month.
+- Identify the month with the highest retail transfer for each supplier over the past 12 months.
+
+---
+
+> **Note:**  
+> This is a sample of SQL queries and ideas for analyzing warehouse and retail sales data. Results depend on the specific structure and values in your database.
